@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trail Explorer - Trail Details</title>
+    <!-- Add Leaflet CSS for the map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Inter:wght@500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #111;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            padding: 15px;
+            background-color: transparent;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+        
+        .back-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        /* Hero image section */
+        .hero-image {
+            width: 100%;
+            height: 50vh;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        /* Trail info overlay */
+        .trail-info-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+        }
+        
+        .trail-name {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        
+        .park-name {
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .difficulty {
+            background-color: #4CAF50;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .difficulty.moderate {
+            background-color: #FF9800;
+        }
+        
+        .difficulty.hard {
+            background-color: #F44336;
+        }
+        
+        .rating {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .star {
+            color: #FFD700;
+            margin-right: 2px;
+        }
+        
+        /* Stats section */
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .stat-box {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .stat-value {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        
+        /* Features section */
+        .features-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .feature-tag {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+        }
+        
+        /* Main content */
+        .main-content {
+            flex: 1;
+            padding: 0 15px;
+            margin-top: -20px;
+            position: relative;
+            z-index: 2;
+            background-color: #111;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        /* Map preview */
+        .map-preview {
+            margin: 20px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            height: 170px;
+        }
+        
+        #preview-map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .preview-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 99999;
+        }
+        
+        /* Information section */
+        .info-section {
+            margin: 25px 0;
+        }
+        
+        .info-section a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        
+        /* Weather section */
+        .weather-section {
+            margin: 25px 0;
+        }
+        
+        .weather-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .weather-forecast {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding-bottom: 10px;
+        }
+        
+        .weather-day {
+            text-align: center;
+            min-width: 50px;
+        }
+        
+        .day-name {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .day-temp {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 8px 0;
+        }
+        
+        .temp-circle {
+            width: 40px;
+            height: 40px;
+            background-color: #222;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        
+        .current-day .temp-circle {
+            background-color: #2A2323;
+            border: 2px solid #4CAF50;
+        }
+        
+        .time-info {
+            font-size: 10px;
+            margin-top: 10px;
+            opacity: 0.7;
+        }
+        
+        .weather-icon {
+            font-size: 20px;
+        }
+        
+        /* Reviews section */
+        .reviews-section {
+            margin: 25px 0 100px;
+        }
+        
+        .reviews-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .reviews-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+        
+        .review-count {
+            color: #4CAF50;
+        }
+        
+        .review-item {
+            margin-bottom: 25px;
+        }
+        
+        .reviewer {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #333;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .reviewer-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .reviewer-name {
+            font-weight: 700;
+        }
+        
+        .reviewer-rating {
+            display: flex;
+            margin-top: 3px;
+        }
+        
+        .reviewer-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+        }
+        
+        .reviewer-tag {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+        
+        .review-content {
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        
+        /* Bottom action bar */
+        .bottom-bar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            background-color: #1A1A1A;
+            padding: 15px;
+            z-index: 1000;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .map-download-button {
+            flex: 1;
+            padding: 12px;
+            background-color: transparent;
+            color: #fff;
+            border: 1px solid #4CAF50;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .map-download-button svg {
+            margin-right: 8px;
+        }
+        
+        .begin-trail-button {
+            flex: 1;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        
+        /* Filter selection styling */
+        .selected-filter {
+            color: #ff0000 !important;
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: none;
+            z-index: 2000;
+        }
+        
+        /* Video overlay styles */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(23, 23, 23, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .video-container {
+            width: 300px; /* Fixed width */
+            position: relative;
+            margin: 0 auto; /* Center horizontally */
+        }
+        
+        .video-container video {
+            width: 100%;
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 10px;
+        }
+        
+        .close-video {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <button class="back-button" onclick="window.location.href = 'selectionPage2.html?trail=';">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+        <div class="header-title">Trail Details</div>
+    </div>
+    
+    <!-- Hero Image Section -->
+    <div class="hero-image" style="background-image: url('https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dHJhaWwlMjBtb3VudGFpbnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60');">
+        <div class="trail-info-overlay">
+            <h1 class="trail-name">Whiskey Rapids Trail</h1>
+            <div class="park-name">
+                Algonquin Provincial Park
+                <span class="difficulty">Easy</span>
+            </div>
+            <div class="rating" id="rating-stars">
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star" style="opacity: 0.3;">★</span>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-label">Estimated</div>
+                    <div class="stat-value">40 minutes</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Distance</div>
+                    <div class="stat-value">2.1 km</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Elevation</div>
+                    <div class="stat-value">81 m</div>
+                </div>
+            </div>
+            
+            <div class="features-container">
+                <div class="feature-tag">Biking</div>
+                <div class="feature-tag">Public Wi-Fi</div>
+                <div class="feature-tag">Boating</div>
+                <div class="feature-tag">Kid-friendly</div>
+                <div class="feature-tag">Hiking</div>
+                <div class="feature-tag">Dog-Friendly</div>
+                <div class="feature-tag">Great Views</div>
+                <div class="feature-tag">Accessibility</div>
+                <div class="feature-tag">Easy to hike</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Map Preview -->
+        <div class="map-preview">
+            <div id="preview-map"></div>
+            <button class="preview-button" id="preview-button">Preview Map</button>
+        </div>
+        
+        <!-- Information Section -->
+        <div class="info-section">
+            <p>For more information please visit <a href="https://www.ontarioparks.ca/park/algonquin" target="_blank">https://www.ontarioparks.ca/park/algonquin</a></p>
+        </div>
+        
+        <!-- Weather Section -->
+        <div class="weather-section">
+            <h2 class="weather-title">Weather</h2>
+            <div class="weather-forecast">
+                <div class="weather-day current-day">
+                    <div class="day-name">Mon</div>
+                    <div class="temp-circle">
+                        <div class="day-temp">21°</div>
+                    </div>
+                    <div class="time-info">
+                        <div>↑ 07:04</div>
+                        <div>↓ 17:52</div>
+                    </div>
+                </div>
+                
+                <div class="weather-day">
+                    <div class="day-name">Tue</div>
+                    <div class="temp-circle">
+                        <div class="day-temp">22°</div>
+                    </div>
+                </div>
+                
+                <div class="weather-day">
+                    <div class="day-name">Wed</div>
+                    <div class="temp-circle">
+                        <div class="day-temp">23°</div>
+                    </div>
+                </div>
+                
+                <div class="weather-day">
+                    <div class="day-name">Thu</div>
+                    <div class="temp-circle">
+                        <div class="weather-icon">❄️</div>
+                        <div class="day-temp">-7°</div>
+                    </div>
+                </div>
+                
+                <div class="weather-day">
+                    <div class="day-name">Fri</div>
+                    <div class="temp-circle">
+                        <div class="day-temp">25°</div>
+                    </div>
+                </div>
+                
+                <div class="weather-day">
+                    <div class="day-name">Sat</div>
+                    <div class="temp-circle">
+                        <div class="day-temp">26°</div>
+                    </div>
+                </div>
+                
+                <div class="weather-day">
+                    <div class="day-name">Sun</div>
+                    <div class="temp-circle">
+                        <div class="weather-icon">🌧️</div>
+                        <div class="time-info">
+                            <div>↑ 07:04</div>
+                            <div>↓ 17:52</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reviews Section -->
+        <div class="reviews-section" id="reviews">
+            <div class="reviews-header">
+                <h2 class="reviews-title">Reviews</h2>
+                <span class="review-count">4/5</span>
+            </div>
+            
+            <!-- Review 1 -->
+            <div class="review-item">
+                <div class="reviewer">
+                    <div class="reviewer-avatar">
+                        <img src="https://api.dicebear.com/6.x/avataaars/svg?seed=Delaney" alt="Avatar">
+                    </div>
+                    <div class="reviewer-info">
+                        <div class="reviewer-name">Delaney Stanley</div>
+                        <div class="reviewer-rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star" style="opacity: 0.3;">★</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reviewer-tags">
+                    <div class="reviewer-tag">Dog-Friendly</div>
+                    <div class="reviewer-tag">Great Views</div>
+                    <div class="reviewer-tag">Accessibility</div>
+                    <div class="reviewer-tag">Hiking</div>
+                    <div class="reviewer-tag">Easy to hike</div>
+                    <div class="reviewer-tag">Kid-friendly</div>
+                </div>
+                
+                <div class="review-content">
+                    Such a beautiful little trail. I only had a couple hours and this hike was the perfect amount of time. It's well marked and has a pretty clear trail! A few ups and downs for sure though! So wear shoes with good grip or bare feet!
+                </div>
+            </div>
+            
+            <!-- Review 2 -->
+            <div class="review-item">
+                <div class="reviewer">
+                    <div class="reviewer-avatar">
+                        <img src="https://api.dicebear.com/6.x/avataaars/svg?seed=Lauren" alt="Avatar">
+                    </div>
+                    <div class="reviewer-info">
+                        <div class="reviewer-name">Lauren White</div>
+                        <div class="reviewer-rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star" style="opacity: 0.3;">★</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reviewer-tags">
+                    <div class="reviewer-tag">Dog-Friendly</div>
+                    <div class="reviewer-tag">Easy to hike</div>
+                    <div class="reviewer-tag">Hiking</div>
+                </div>
+                
+                <div class="review-content">
+                    I recently hiked the Whiskey Rapids Trail, and it was an incredible experience! The trail took us through stunning landscapes, featuring dense forests and beautiful river views. The sound of the rushing water added to the tranquility of the hike.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Video Overlay -->
+    <div class="video-overlay" id="video-overlay">
+        <div class="video-container">
+            <button class="close-video" id="close-video">×</button>
+            <video id="preview-video" controls>
+                <source src="preview.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+    
+    <!-- Bottom Action Bar -->
+    <div class="bottom-bar">
+        <button class="map-download-button" id="download-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Map Download
+        </button>
+        <button class="begin-trail-button" id="begin-trail-button">Begin Trail</button>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="download-toast">Map downloaded successfully!</div>
+    
+    <!-- Load Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    
+    <script>
+        // Initialize map when the page loads
+        window.onload = function() {
+            initializeMap();
+            setupEventListeners();
+        };
+        
+        // Initialize the map preview
+        function initializeMap() {
+            // Create map centered on Algonquin Park
+            let previewMap = L.map('preview-map').setView([45.8, -78.4], 13);
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '©️ OpenStreetMap contributors'
+            }).addTo(previewMap);
+            
+            // Add a marker for the starting point
+            let startMarker = L.marker([45.8, -78.4]).addTo(previewMap)
+                .bindPopup('Whiskey Rapids Trail Start').openPopup();
+            
+            // Add a simple route line (this would be replaced with actual trail GPS data)
+            let routePoints = [
+                [45.8, -78.4], // Start
+                [45.805, -78.39], // Midpoint 1
+                [45.81, -78.385], // Midpoint 2
+                [45.815, -78.39], // Midpoint 3
+                [45.81, -78.395] // End
+            ];
+            
+            let route = L.polyline(routePoints, {
+                color: '#4CAF50',
+                weight: 5,
+                opacity: 0.7
+            }).addTo(previewMap);
+            
+            // Add an end marker
+            L.marker([45.81, -78.395]).addTo(previewMap)
+                .bindPopup('Whiskey Rapids Trail End');
+            
+            // Disable zoom and drag for preview
+            previewMap.dragging.disable();
+            previewMap.touchZoom.disable();
+            previewMap.doubleClickZoom.disable();
+            previewMap.scrollWheelZoom.disable();
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Rating section click scrolls to reviews
+            document.getElementById('rating-stars').addEventListener('click', function() {
+                document.getElementById('reviews').scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Download button changes color when clicked and shows toast
+            document.getElementById('download-button').addEventListener('click', function() {
+                // Change button color
+                this.style.borderColor = '#2196F3';
+                this.style.color = '#2196F3';
+                
+                // Show notification
+                const toast = document.getElementById('download-toast');
+                toast.style.display = 'block';
+                
+                // Hide notification after 3 seconds
+                setTimeout(function() {
+                    toast.style.display = 'none';
+                }, 3000);
+            });
+            
+            // Preview map button functionality - now plays video
+            document.getElementById('preview-button').addEventListener('click', function() {
+                const videoOverlay = document.getElementById('video-overlay');
+                const video = document.getElementById('preview-video');
+                
+                // Show the video overlay
+                videoOverlay.style.display = 'flex';
+                
+                // Play the video
+                video.play().catch(e => {
+                    console.error("Video play failed:", e);
+                    alert("Could not play the video. Please ensure you have a video file named 'preview.mp4' in the same directory.");
+                });
+            });
+            
+            // Close video button
+            document.getElementById('close-video').addEventListener('click', function() {
+                const videoOverlay = document.getElementById('video-overlay');
+                const video = document.getElementById('preview-video');
+                
+                // Pause the video
+                video.pause();
+                
+                // Hide the overlay
+                videoOverlay.style.display = 'none';
+            });
+            
+            // Begin trail button functionality
+            document.getElementById('begin-trail-button').addEventListener('click', function() {
+                // In a real app, this would start navigation
+                alert('Starting navigation to Whiskey Rapids Trail');
+            });
+            
+            // Make filter tags interactive by adding click event
+            const featureTags = document.querySelectorAll('.feature-tag');
+            featureTags.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    // Toggle selected class
+                    this.classList.toggle('selected-filter');
+                });
+            });
+            
+            // Similarly for reviewer tags
+            const reviewerTags = document.querySelectorAll('.reviewer-tag');
+            reviewerTags.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    // Toggle selected class
+                    this.classList.toggle('selected-filter');
+                });
+            });
+            
+            // Close video when clicking outside
+            document.getElementById('video-overlay').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    const video = document.getElementById('preview-video');
+                    video.pause();
+                    this.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

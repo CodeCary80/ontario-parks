@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ontario Parks - Trail Selection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Inter:wght@500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f8f8f8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        .header {
+            padding: 20px 15px;
+            position: sticky;
+            top: 0;
+            background-color: #f8f8f8;
+            z-index: 10;
+        }
+        
+        .header h1 {
+            font-size: clamp(20px, 5vw, 24px); /* Responsive font size */
+            font-weight: 800;
+            color: #333;
+        }
+        
+        /* Search Bar */
+        .search-container {
+            padding: 0 15px 15px;
+            position: sticky;
+            top: 60px;
+            background-color: #f8f8f8;
+            z-index: 10;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 10px;
+            padding: 10px 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .search-icon {
+            margin-right: 10px;
+            color: #152B0B;
+            font-size: clamp(16px, 4vw, 20px);
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            font-size: clamp(16px, 4vw, 20px); /* Responsive font size */
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: #152B0B;
+            outline: none;
+        }
+        
+        /* Horizontal Scrolling Container */
+        .parks-scroll-container {
+            flex: 1;
+            overflow-x: auto;
+            padding: 15px;
+            scroll-snap-type: x mandatory;
+            scroll-padding: 15px;
+            display: flex;
+            width: 100%;
+        }
+        
+        /* Park Cards Container */
+        .parks-container {
+            display: flex;
+            gap: 15px;
+            height: 100%;
+        }
+        
+        /* Park Card */
+        .park-card {
+            background-color: #2A2323;
+            border-radius: 20px;
+            padding: clamp(15px, 4vw, 25px); /* Responsive padding */
+            color: white;
+            scroll-snap-align: start;
+            min-width: calc(100vw - 30px);
+            width: calc(100vw - 30px);
+            max-width: 400px; /* Limits card width on larger screens */
+            height: auto;
+            min-height: 60vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            margin-bottom: 15px; /* Space for scrollbar on mobile */
+        }
+        
+        .park-name {
+            font-size: clamp(18px, 5vw, 20px); /* Responsive font size */
+            font-weight: 800;
+            margin-bottom: clamp(15px, 4vw, 20px); /* Responsive spacing */
+        }
+        
+        .park-detail {
+            font-size: clamp(13px, 3.5vw, 14px); /* Responsive font size */
+            margin-bottom: 8px;
+            margin-left: 5px;
+        }
+        
+        .see-more {
+            margin-top: auto;
+            text-align: right;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: clamp(14px, 4vw, 16px); /* Responsive font size */
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .see-more-arrow {
+            display: inline-block;
+            width: 6px;
+            height: 10px;
+            background-color: white;
+            margin-left: 5px;
+        }
+        
+        /* Filter Chips */
+        .filter-chips {
+            display: flex;
+            padding: 15px;
+            gap: 10px;
+            overflow-x: auto;
+            background-color: white;
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+        }
+        
+        .filter-chip {
+            padding: 8px 15px;
+            background-color: #f0f0f0;
+            border-radius: 20px;
+            font-size: clamp(12px, 3vw, 14px); /* Responsive font size */
+            white-space: nowrap;
+        }
+        
+        .filter-chip.selected {
+            background-color: #2A2323;
+            color: white;
+        }
+
+        /* Responsive adjustments for tablets and larger screens */
+        @media (min-width: 768px) {
+            .park-card {
+                min-width: calc(50vw - 30px);
+                width: calc(50vw - 30px);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .park-card {
+                min-width: calc(33vw - 30px);
+                width: calc(33vw - 30px);
+            }
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .parks-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+        .parks-scroll-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>Choosing Trail 3</h1>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Find Parks...">
+        </div>
+    </div>
+    
+    <!-- Horizontal Scrolling Container -->
+    <div class="parks-scroll-container">
+        <div class="parks-container">
+            <!-- Park Card 1 -->
+            <div class="park-card">
+                <h2 class="park-name">Whiskey Rapids Trail</h2>
+                <div class="park-detail">Level: Easy</div>
+                <div class="park-detail">Dist: 17kms</div>
+                <div class="park-detail">Time: 150mins</div>
+                <div class="see-more">
+                    See More <span class="see-more-arrow"></span>
+                </div>
+            </div>
+            
+            <!-- Park Card 2 -->
+            <div class="park-card">
+                <h2 class="park-name">Mizzy Lake Trail</h2>
+                <div class="park-detail">Level: Moderate</div>
+                <div class="park-detail">Dist: 10.8kms</div>
+                <div class="park-detail">Time: 4-5hrs</div>
+                <div class="see-more">
+                    See More <span class="see-more-arrow"></span>
+                </div>
+            </div>
+            
+            <!-- Park Card 3 -->
+            <div class="park-card">
+                <h2 class="park-name">Lookout Trail</h2>
+                <div class="park-detail">Level: Easy</div>
+                <div class="park-detail">Dist: 1.9kms</div>
+                <div class="park-detail">Time: 45mins</div>
+                <div class="see-more">
+                    See More <span class="see-more-arrow"></span>
+                </div>
+            </div>
+
+            <!-- Additional cards for testing -->
+            <div class="park-card">
+                <h2 class="park-name">Centennial Ridges Trail</h2>
+                <div class="park-detail">Level: Difficult</div>
+                <div class="park-detail">Dist: 10.4kms</div>
+                <div class="park-detail">Time: 4-6hrs</div>
+                <div class="see-more">
+                    See More <span class="see-more-arrow"></span>
+                </div>
+            </div>
+
+            <div class="park-card">
+                <h2 class="park-name">Track and Tower Trail</h2>
+                <div class="park-detail">Level: Moderate</div>
+                <div class="park-detail">Dist: 7.5kms</div>
+                <div class="park-detail">Time: 3-4hrs</div>
+                <div class="see-more">
+                    See More <span class="see-more-arrow"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filter Chips -->
+    <div class="filter-chips">
+        <div class="filter-chip selected">Easy</div>
+        <div class="filter-chip">Kid Friendly</div>
+        <div class="filter-chip">Camping</div>
+        <div class="filter-chip">Dog Friendly</div>
+        <div class="filter-chip">Waterfront</div>
+        <div class="filter-chip">Scenic Views</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filter chip functionality
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                    // Filter parks based on selected chips
+                    filterParks();
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('input', function(e) {
+                filterParks();
+            });
+            
+            // See More functionality
+            document.querySelectorAll('.see-more').forEach(button => {
+                button.addEventListener('click', function() {
+                    const parkName = this.closest('.park-card').querySelector('.park-name').textContent;
+                    alert(`Showing details for ${parkName}`);
+                    // In a real app, navigate to details page or show modal
+                });
+            });
+
+            // Dynamic card sizing for responsiveness
+            function adjustCardSize() {
+                const cards = document.querySelectorAll('.park-card');
+                const containerWidth = document.querySelector('.parks-scroll-container').offsetWidth;
+                
+                // On mobile, keep full width scrolling
+                if (window.innerWidth < 768) {
+                    cards.forEach(card => {
+                        card.style.minWidth = `calc(100vw - 30px)`;
+                        card.style.width = `calc(100vw - 30px)`;
+                    });
+                }
+            }
+
+            // Initial adjustment
+            adjustCardSize();
+            
+            // Adjust on window resize
+            window.addEventListener('resize', adjustCardSize);
+
+            // Filter parks function
+            function filterParks() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedFilters = Array.from(document.querySelectorAll('.filter-chip.selected'))
+                    .map(chip => chip.textContent.trim());
+                
+                // In a real app, you would filter your data array here
+                // and then re-render the cards
+                console.log(`Filtering with search: ${searchTerm} and filters: ${selectedFilters.join(', ')}`);
+            }
+        });
+    </script>
+</body>
+</html>

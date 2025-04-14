@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trail Explorer - Review</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Inter:wght@500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        body {
+            background-color: #1F331B;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .close-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+        }
+        
+        /* Content area */
+        .content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        /* Stats section */
+        .stats-section {
+            margin-bottom: 30px;
+        }
+        
+        .stat-label {
+            color: #aaa;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+        
+        .stat-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        /* Review section */
+        .review-section {
+            background-color: #000;
+            border-radius: 15px 15px 0 0;
+            padding: 30px 20px;
+            margin: 0 -20px;
+        }
+        
+        .review-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        
+        .review-subtitle {
+            color: #ccc;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        
+        .rating-stars {
+            display: flex;
+            justify-content: space-between;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+        
+        .star {
+            width: 50px;
+            height: 50px;
+            background-color: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .star.active {
+            color: #FFD700;
+        }
+        
+        .review-textarea {
+            width: 100%;
+            height: 100px;
+            background-color: #222;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            font-size: 16px;
+            margin-top: 20px;
+            resize: none;
+        }
+        
+        .submit-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            width: 100%;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <button class="close-button" onclick="goToHome()">×</button>
+    </div>
+    
+    <!-- Content Area -->
+    <div class="content">
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stat-icon">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0xMyA0VjE2TDIwIDloLTVWNGgtMlptLTIgMTJWNEg5VjloLTVsNyA3WiIgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik0xOCAxNXY0SDZWMTVINHYxYzAgMS4xLjkgMiAyIDJoMTJjMS4xIDAgMi0uOSAyLTJ2LTFoLTJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=" alt="Activity" width="50" height="50">
+            </div>
+            <div class="stat-label">Activity</div>
+            <div class="stat-value">Hiking</div>
+            
+            <div class="stat-label">Distance</div>
+            <div class="stat-value">2.1 km</div>
+            
+            <div class="stat-label">Elevation gain</div>
+            <div class="stat-value">815 m</div>
+            
+            <div class="stat-label">Time</div>
+            <div class="stat-value">0:03:54</div>
+        </div>
+        
+        <!-- Review Section -->
+        <div class="review-section">
+            <h1 class="review-title">How was the trail?</h1>
+            <p class="review-subtitle">Share your experience with the community.</p>
+            
+            <div class="rating-stars">
+                <div class="star" data-rating="1">★</div>
+                <div class="star" data-rating="2">★</div>
+                <div class="star" data-rating="3">★</div>
+                <div class="star" data-rating="4">★</div>
+                <div class="star" data-rating="5">★</div>
+            </div>
+            
+            <textarea class="review-textarea" placeholder="Write your review here..."></textarea>
+            
+            <button class="submit-button" onclick="submitReview()">Submit Review</button>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize variables
+        let selectedRating = 0;
+        
+        // Get parameters from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const distance = urlParams.get('distance') || '2.1';
+        const elevation = urlParams.get('elevation') || '815';
+        const time = urlParams.get('time') || '0:03:54';
+        const trailName = urlParams.get('trail') || 'Whiskey Rapids Trail';
+        
+        // Update stats with URL parameters if available
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update the stats from URL parameters
+            document.querySelectorAll('.stat-value')[1].textContent = distance + ' km';
+            document.querySelectorAll('.stat-value')[2].textContent = elevation + ' m';
+            document.querySelectorAll('.stat-value')[3].textContent = time;
+            
+            // Set up star rating
+            setupStarRating();
+        });
+        
+        // Function to handle star rating
+        function setupStarRating() {
+            const stars = document.querySelectorAll('.star');
+            
+            stars.forEach(star => {
+                // Mouseover effect
+                star.addEventListener('mouseover', function() {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+                    highlightStars(rating);
+                });
+                
+                // Click to set rating
+                star.addEventListener('click', function() {
+                    selectedRating = parseInt(this.getAttribute('data-rating'));
+                    highlightStars(selectedRating);
+                });
+            });
+            
+            // Reset stars when mouse leaves rating container
+            document.querySelector('.rating-stars').addEventListener('mouseleave', function() {
+                highlightStars(selectedRating);
+            });
+        }
+        
+        // Function to highlight stars up to a certain rating
+        function highlightStars(rating) {
+            const stars = document.querySelectorAll('.star');
+            
+            stars.forEach(star => {
+                const starRating = parseInt(star.getAttribute('data-rating'));
+                if (starRating <= rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+        
+        // Function to submit the review
+        function submitReview() {
+            const reviewText = document.querySelector('.review-textarea').value;
+            
+            if (selectedRating === 0) {
+                alert('Please select a rating');
+                return;
+            }
+            
+            // In a real app, you would send this data to a server
+            console.log('Review submitted:', {
+                trail: trailName,
+                rating: selectedRating,
+                review: reviewText,
+                distance: distance,
+                elevation: elevation,
+                time: time
+            });
+            
+            // Show confirmation and redirect
+            alert('Thank you for your review!');
+            goToHome();
+        }
+        
+        // Function to go back to home/selection page
+        function goToHome() {
+            window.location.href = './selectionPage2.html';
+        }
+    </script>
+</body>
+</html>

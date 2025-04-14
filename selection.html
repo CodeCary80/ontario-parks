@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ontario Parks - Trail Selection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Inter:wght@500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #1F331B;
+            background-image: linear-gradient(rgba(31, 51, 27, 0.9), rgba(31, 51, 27, 0.9)),
+                              repeating-linear-gradient(to right, rgba(255,255,255,0.05), rgba(255,255,255,0.05) 2px, transparent 2px, transparent 30px);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        .header {
+            padding: 20px 15px;
+            position: sticky;
+            top: 0;
+            background-color: transparent;
+            z-index: 10;
+            color: #fff;
+            background-color: #1F331B;
+        }
+        
+        .header h1 {
+            font-size: clamp(20px, 5vw, 24px);
+            font-weight: 800;
+        }
+        
+        /* Search Bar */
+        .search-container {
+            padding: 0 15px 15px;
+            position: sticky;
+            top: 60px;
+            background-color: transparent;
+            z-index: 10;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 50px;
+            padding: 10px 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .search-icon {
+            margin-right: 10px;
+            color: #152B0B;
+            font-size: clamp(16px, 4vw, 20px);
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            font-size: clamp(16px, 4vw, 18px);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: #152B0B;
+            outline: none;
+        }
+        
+        .filter-icon {
+            color: #152B0B;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Status Messages */
+        .status-message {
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            width: 100%;
+        }
+        
+        .loading-message {
+            color: #ffffff;
+        }
+        
+        .info-message {
+            color: #ffcc00;
+        }
+        
+        .error-message {
+            color: #ff4444;
+        }
+        
+        /* Horizontal Scrolling Container */
+        .parks-scroll-container {
+            flex: 1;
+            overflow-x: auto;
+            padding: 15px;
+            scroll-snap-type: x mandatory;
+            scroll-padding: 15px;
+            display: flex;
+            width: 100%;
+        }
+        
+        /* Park Cards Container */
+        .parks-container {
+            display: flex;
+            gap: 15px;
+            height: 100%;
+        }
+        
+        /* Park Card */
+        .park-card {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            padding: clamp(15px, 4vw, 25px);
+            color: white;
+            scroll-snap-align: start;
+            min-width: calc(100vw - 30px);
+            width: calc(100vw - 30px);
+            max-width: 400px;
+            height: auto;
+            min-height: 60vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            margin-bottom: 15px;
+            text-decoration: none;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .park-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.7));
+            border-radius: 20px;
+            z-index: 0;
+        }
+        
+        .card-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .park-name {
+            font-size: clamp(24px, 5vw, 28px);
+            font-weight: 800;
+            margin-bottom: clamp(5px, 2vw, 10px);
+        }
+        
+        .park-detail-wrapper {
+            margin-bottom: 20px;
+        }
+        
+        .park-detail {
+            font-size: clamp(14px, 3.5vw, 16px);
+            margin-bottom: 8px;
+        }
+        
+        .action-buttons {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 2;
+        }
+        
+        .circle-button {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(31, 51, 27, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: auto;
+        }
+        
+        .tag {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            backdrop-filter: blur(2px);
+        }
+        
+        .view-map-button {
+            background-color: #00E676;
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 0;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 200px;
+            margin: 20px auto;
+            text-align: center;
+            display: block;
+        }
+        
+        /* Filter Chips */
+        .filter-chips {
+            display: flex;
+            padding: 15px;
+            gap: 10px;
+            overflow-x: auto;
+            position: sticky;
+        }
+        
+        .filter-chip {
+            padding: 8px 15px;
+            background-color: white;
+            border-radius: 50px;
+            font-size: clamp(12px, 3vw, 14px);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-chip.selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            .park-card {
+                min-width: calc(50vw - 30px);
+                width: calc(50vw - 30px);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .park-card {
+                min-width: calc(33vw - 30px);
+                width: calc(33vw - 30px);
+            }
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .parks-scroll-container::-webkit-scrollbar,
+        .filter-chips::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .parks-scroll-container,
+        .filter-chips {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* New styles for active nav item */
+        .nav-item.active {
+            color: #4CAF50;
+        }
+        .nav-item.active .nav-icon {
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1 id="header-title">Parks Near You</h1>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Find Parks..." id="search-input">
+            <span class="filter-icon">⋮</span>
+        </div>
+    </div>
+    
+    <!-- Filter Chips -->
+    <div class="filter-chips">
+        <div class="filter-chip" data-filter="Easy">Easy</div>
+        <div class="filter-chip" data-filter="Kid Friendly">Kid Friendly</div>
+        <div class="filter-chip" data-filter="Camping">Camping</div>
+        <div class="filter-chip" data-filter="Dog Friendly">Dog Friendly</div>
+        <div class="filter-chip" data-filter="Waterfront">Waterfront</div>
+        <div class="filter-chip" data-filter="Scenic Views">Scenic Views</div>
+    </div>
+    
+    <!-- Horizontal Scrolling Container -->
+    <div class="parks-scroll-container">
+        <div class="parks-container" id="parks-container">
+            <div class="status-message loading-message">Finding parks near you...</div>
+        </div>
+    </div>
+    
+    <!-- View Map Button -->
+    <button class="view-map-button" onclick="navigateToMap()">View Map</button>
+    
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active" id="nav-search">
+            <div class="nav-icon">🔍</div>
+            <div>Search</div>
+        </a>
+
+        <a href="#" class="nav-item" id="nav-explore">
+            <div class="nav-icon">🧭</div>
+            <div>Explore</div>
+        </a>
+        <a href="#" class="nav-item" id="nav-saved">
+            <div class="nav-icon">🔖</div>
+            <div>Saved</div>
+        </a>
+        <a href="#" class="nav-item" id="nav-profile">
+            <div class="nav-icon">👤</div>
+            <div>Profile</div>
+        </a>
+    </div>
+
+    <script>
+        // Global variables
+        let userLocation = null;
+        let allParks = [];
+        let currentView = 'all'; // 'all' or 'saved'
+        
+        // Fallback data for when API fails
+        const fallbackParks = [
+            {
+                id: 1,
+                name: "Algonquin Provincial Park",
+                lat: 45.5926,
+                lng: -78.3657,
+                distance: 250,
+                tags: ["Camping", "Hiking", "Scenic Views", "Waterfront"],
+                image: "https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
+            },
+            {
+                id: 2,
+                name: "Killarney Provincial Park",
+                lat: 46.0389,
+                lng: -81.4067,
+                distance: 350,
+                tags: ["Camping", "Hiking", "Scenic Views", "Dog Friendly"],
+                image: "https://images.unsplash.com/photo-1550236520-7050f3582da0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
+            },
+            {
+                id: 3,
+                name: "Sandbanks Provincial Park",
+                lat: 43.9084,
+                lng: -77.2343,
+                distance: 200,
+                tags: ["Waterfront", "Swimming", "Kid Friendly", "Camping"],
+                image: "https://images.unsplash.com/photo-1552083375-1447ce886485?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
+            },
+            {
+                id: 4,
+                name: "Bruce Peninsula National Park",
+                lat: 45.2415,
+                lng: -81.6296,
+                distance: 300,
+                tags: ["Hiking", "Scenic Views", "Waterfront", "Camping"],
+                image: "https://images.unsplash.com/photo-1533240332313-0db49b459ad6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
+            }
+        ];
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up filter chips
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                    filterParkCards();
+                });
+            });
+            
+            // Set up search
+            document.getElementById('search-input').addEventListener('input', filterParkCards);
+            
+            // Set up navigation
+            setupNavigation();
+            
+            // Locate user and fetch parks
+            locateUser();
+        });
+
+        // Set up navigation event listeners
+        function setupNavigation() {
+            document.getElementById('nav-search').addEventListener('click', function(e) {
+                e.preventDefault();
+                setActiveNav('nav-search');
+                currentView = 'all';
+                document.getElementById('header-title').textContent = 'Parks Near You';
+                filterParkCards();
+            });
+            
+            document.getElementById('nav-explore').addEventListener('click', function(e) {
+                e.preventDefault();
+                setActiveNav('nav-explore');
+                // Future functionality
+            });
+            
+            document.getElementById('nav-saved').addEventListener('click', function(e) {
+                e.preventDefault();
+                setActiveNav('nav-saved');
+                currentView = 'saved';
+                document.getElementById('header-title').textContent = 'Saved Parks';
+                showSavedParks();
+            });
+            
+            document.getElementById('nav-profile').addEventListener('click', function(e) {
+                e.preventDefault();
+                setActiveNav('nav-profile');
+                // Future functionality
+            });
+        }
+
+        // Set active navigation item
+        function setActiveNav(activeId) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.getElementById(activeId).classList.add('active');
+        }
+
+        // Show only saved parks
+        function showSavedParks() {
+            const savedParkIds = getSavedParkIds();
+            const parksToShow = (allParks.length > 0 ? allParks : fallbackParks).filter(park => 
+                savedParkIds.includes(park.id.toString())
+            );
+            
+            if (parksToShow.length === 0) {
+                showStatusMessage("You haven't saved any parks yet", "info");
+            } else {
+                renderParkCards(parksToShow);
+            }
+        }
+
+        // Get saved park IDs from localStorage
+        function getSavedParkIds() {
+            const saved = localStorage.getItem('savedParks');
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        // Save a park to localStorage
+        function savePark(parkId) {
+            const saved = getSavedParkIds();
+            if (!saved.includes(parkId)) {
+                saved.push(parkId);
+                localStorage.setItem('savedParks', JSON.stringify(saved));
+            }
+        }
+
+        // Remove a park from saved in localStorage
+        function unsavePark(parkId) {
+            const saved = getSavedParkIds();
+            const updated = saved.filter(id => id !== parkId);
+            localStorage.setItem('savedParks', JSON.stringify(updated));
+        }
+
+        // Get user location with improved error handling
+        function locateUser() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        showStatusMessage("Finding parks near you...", "loading");
+                        fetchNearbyParks();
+                    },
+                    error => {
+                        console.warn("Geolocation error:", error);
+                        userLocation = { lat: 43.7, lng: -79.4 }; // Default to Toronto
+                        showStatusMessage("Using default location (Toronto area)", "info");
+                        fetchNearbyParks();
+                    },
+                    { 
+                        timeout: 10000, // 10 second timeout
+                        maximumAge: 600000, // Accept cached position up to 10 minutes old
+                        enableHighAccuracy: true 
+                    }
+                );
+            } else {
+                console.warn("Geolocation not supported");
+                userLocation = { lat: 43.7, lng: -79.4 };
+                showStatusMessage("Geolocation not supported. Showing sample parks.", "info");
+                renderParkCards(fallbackParks);
+            }
+        }
+
+        // Fetch parks with better error handling
+        function fetchNearbyParks() {
+            const radius = 10000; // 10km radius
+            const overpassQuery = `
+                [out:json];
+                (
+                    node["leisure"="park"](around:${radius},${userLocation.lat},${userLocation.lng});
+                    way["leisure"="park"](around:${radius},${userLocation.lat},${userLocation.lng});
+                    relation["leisure"="park"](around:${radius},${userLocation.lat},${userLocation.lng});
+                    
+                    // Additional queries for better results
+                    node["tourism"="camp_site"](around:${radius},${userLocation.lat},${userLocation.lng});
+                    way["tourism"="camp_site"](around:${radius},${userLocation.lat},${userLocation.lng});
+                    
+                    node["natural"="wood"](around:${radius},${userLocation.lat},${userLocation.lng});
+                    way["natural"="wood"](around:${radius},${userLocation.lat},${userLocation.lng});
+                );
+                out body;
+                >;
+                out skel qt;
+            `;
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
+            fetch('https://overpass-api.de/api/interpreter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `data=${encodeURIComponent(overpassQuery)}`,
+                signal: controller.signal
+            })
+            .then(response => {
+                clearTimeout(timeoutId);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                if (!data.elements || data.elements.length === 0) {
+                    throw new Error("No parks found in this area");
+                }
+                allParks = processParkData(data.elements);
+                if (allParks.length === 0) {
+                    throw new Error("No valid park data found");
+                }
+                renderParkCards(allParks);
+            })
+            .catch(error => {
+                console.error("API Error:", error);
+                showStatusMessage(`Showing sample parks. (${error.message})`, "info");
+                renderParkCards(fallbackParks);
+            });
+        }
+
+        // Process raw park data
+        function processParkData(elements) {
+        const processedParks = [];
+        const seenParkNames = new Set();
+
+        elements.forEach(element => {
+            try {
+                if (!element.tags || !element.tags.name) return;
+                
+                // Get coordinates
+                let coords;
+                if (element.type === 'node') {
+                    coords = { lat: element.lat, lng: element.lon };
+                } else if (element.center) {
+                    coords = { lat: element.center.lat, lng: element.center.lon };
+                } else {
+                    return; // Skip if no coordinates
+                }
+                
+                // Skip duplicates
+                const parkName = element.tags.name.trim();
+                if (seenParkNames.has(parkName)) return;
+                seenParkNames.add(parkName);
+                
+                // Calculate distance
+                const distance = calculateDistance(
+                    userLocation.lat, 
+                    userLocation.lng, 
+                    coords.lat, 
+                    coords.lng
+                );
+                
+                // Determine tags - now with random assignment
+                const tags = [];
+                
+                // Randomly assign all filter tags with different probabilities
+                if (Math.random() < 0.4) tags.push("Easy");              
+                if (Math.random() < 0.3) tags.push("Kid Friendly");       
+                if (Math.random() < 0.25) tags.push("Camping");          
+                if (Math.random() < 0.35) tags.push("Dog Friendly");     
+                if (Math.random() < 0.2) tags.push("Waterfront");        
+                if (Math.random() < 0.25) tags.push("Scenic Views");     
+                
+                // Still keep original tags from OSM data if they exist
+                if (element.tags.leisure === 'park') tags.push("Park");
+                if (element.tags.tourism === 'camp_site') tags.push("Camping");
+                if (element.tags.playground === 'yes') tags.push("Kid Friendly");
+                if (element.tags.dog === 'yes') tags.push("Dog Friendly");
+                if (element.tags.water === 'lake') tags.push("Waterfront");
+                if (element.tags.natural === 'wood') tags.push("Forest");
+                
+                // Ensure no duplicate tags
+                const uniqueTags = [...new Set(tags)];
+                
+                // Add park data
+                processedParks.push({
+                    id: element.id || Math.random().toString(36).substr(2, 9),
+                    name: parkName,
+                    lat: coords.lat,
+                    lng: coords.lng,
+                    distance: distance,
+                    tags: uniqueTags.length > 0 ? uniqueTags : ["Park"],
+                    image: getRandomParkImage()
+                });
+            } catch (e) {
+                console.warn("Error processing park element:", e);
+            }
+        });
+        
+        return processedParks.sort((a, b) => a.distance - b.distance);
+    }
+
+        // Calculate distance between coordinates in km
+        function calculateDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371; // Earth's radius in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLng/2) * Math.sin(dLng/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // Get random park image from our collection
+        function getRandomParkImage() {
+            const images = [
+                'https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60',
+                'https://images.unsplash.com/photo-1550236520-7050f3582da0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60',
+                'https://images.unsplash.com/photo-1552083375-1447ce886485?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60',
+                'https://images.unsplash.com/photo-1533240332313-0db49b459ad6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60',
+                'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60'
+            ];
+            return images[Math.floor(Math.random() * images.length)];
+        }
+
+        // Show status message
+        function showStatusMessage(message, type = "info") {
+            const container = document.getElementById('parks-container');
+            container.innerHTML = `<div class="status-message ${type}-message">${message}</div>`;
+        }
+
+        // Render park cards
+        function renderParkCards(parks) {
+            const container = document.getElementById('parks-container');
+            
+            if (!parks || parks.length === 0) {
+                showStatusMessage("No parks found in this area", "info");
+                return;
+            }
+            
+            container.innerHTML = '';
+            const parksContainer = document.createElement('div');
+            parksContainer.className = 'parks-container';
+            
+            const savedParkIds = getSavedParkIds();
+            
+            parks.forEach(park => {
+                const isSaved = savedParkIds.includes(park.id.toString());
+                const card = document.createElement('div');
+                card.className = 'park-card';
+                card.style.backgroundImage = `url('${park.image}')`;
+                card.onclick = () => navigateToDetail(park);
+                
+                card.innerHTML = `
+                    <div class="action-buttons">
+                        <button class="circle-button favorite-btn" data-park-id="${park.id}">${isSaved ? '♥' : '♡'}</button>
+                        <button class="circle-button share-btn">↗</button>
+                    </div>
+                    <div class="card-content">
+                        <h2 class="park-name">${park.name}</h2>
+                        <div class="park-detail-wrapper">
+                            <div class="park-detail">${park.distance.toFixed(1)} km away</div>
+                            ${park.tags.includes("Camping") ? '<div class="park-detail">🏕️ Camping available</div>' : ''}
+                        </div>
+                        <div class="tags-container">
+                            ${park.tags.map(tag => `<div class="tag">${tag}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                parksContainer.appendChild(card);
+            });
+            
+            container.appendChild(parksContainer);
+            
+            // Add event listeners to new buttons
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const parkId = this.getAttribute('data-park-id');
+                    
+                    if (this.textContent === '♡') {
+                        this.textContent = '♥';
+                        savePark(parkId);
+                    } else {
+                        this.textContent = '♡';
+                        unsavePark(parkId);
+                        
+                        // If we're in saved view, remove the card
+                        if (currentView === 'saved') {
+                            this.closest('.park-card').remove();
+                            // If no cards left, show message
+                            if (document.querySelectorAll('.park-card').length === 0) {
+                                showStatusMessage("You haven't saved any parks yet", "info");
+                            }
+                        }
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.share-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const parkName = this.closest('.park-card').querySelector('.park-name').textContent;
+                    if (navigator.share) {
+                        navigator.share({
+                            title: parkName,
+                            text: `Check out ${parkName} in Ontario Parks!`,
+                            url: window.location.href
+                        }).catch(err => {
+                            console.log('Error sharing:', err);
+                            alert(`Share ${parkName}`);
+                        });
+                    } else {
+                        alert(`Share ${parkName}`);
+                    }
+                });
+            });
+        }
+
+        // Filter park cards based on search and filters
+        function filterParkCards() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const selectedFilters = Array.from(document.querySelectorAll('.filter-chip.selected'))
+                .map(chip => chip.dataset.filter);
+            
+            let parksToFilter;
+            if (currentView === 'saved') {
+                const savedParkIds = getSavedParkIds();
+                parksToFilter = (allParks.length > 0 ? allParks : fallbackParks).filter(park => 
+                    savedParkIds.includes(park.id.toString())
+                );
+            } else {
+                parksToFilter = allParks.length > 0 ? allParks : fallbackParks;
+            }
+            
+            const filtered = parksToFilter.filter(park => {
+                // Search by name
+                if (searchTerm && !park.name.toLowerCase().includes(searchTerm)) {
+                    return false;
+                }
+                
+                // Filter by tags if any filters selected
+                if (selectedFilters.length > 0) {
+                    return selectedFilters.every(filter => 
+                        park.tags.some(tag => tag.includes(filter))
+                    );
+                }
+                
+                return true;
+            });
+            
+            if (filtered.length === 0) {
+                showStatusMessage("No parks match your search criteria", "info");
+            } else {
+                renderParkCards(filtered);
+            }
+        }
+
+        // Navigation functions
+        function navigateToDetail(park) {
+            // Convert the park object to a URL-safe string
+            const parkDataStr = encodeURIComponent(JSON.stringify(park));
+            window.location.href = `detail.html?park=${parkDataStr}`;
+        }
+        
+        function navigateToMap() {
+            console.log("Navigating to map view");
+            window.location.href = 'map.html';
+        }
+    </script>
+</body>
+</html>
