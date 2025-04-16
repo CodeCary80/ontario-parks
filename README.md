@@ -5,13 +5,13 @@ A responsive web application for discovering, exploring, and tracking hiking tra
 ## 👥 Team
 
 ### UI Designers
-- Chrissendy Felicia
-- Phoenix Mullan
-- Harsh Parmar
+- Chrissendy 
+- Phoenix 
+- Ayush  
 
 ### Developers
-- Ayush Solanki
-- Tianrui Zhu
+- Harsh 
+- Tianrui
 
 ## 📱 Features
 
