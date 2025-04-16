@@ -2,7 +2,7 @@
 
 A responsive web application for discovering, exploring, and tracking hiking trails in Ontario Provincial Parks.
 
-alive: https://peru-deer-873587.hostingersite.com/map.html
+live: https://peru-deer-873587.hostingersite.com/map.html
 
 ## 👥 Team
 
