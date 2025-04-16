@@ -2,6 +2,17 @@
 
 A responsive web application for discovering, exploring, and tracking hiking trails in Ontario Provincial Parks.
 
+## 👥 Team
+
+### UI Designers
+- Chrissendy Felicia
+- Phoenix Mullan
+- Harsh Parmar
+
+### Developers
+- Ayush Solanki
+- Tianrui Zhu
+
 ## 📱 Features
 
 ### 🔍 Search and Discovery
