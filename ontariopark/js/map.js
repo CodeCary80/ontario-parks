@@ -64,7 +64,7 @@ function locateUser() {
 
 // Function to explore trails (placeholder)
 function exploreTrails() {
-    window.location.href = "selection.html";
+    window.location.href = "index.html";
 }
 
 // Function to search for parks in a specific location

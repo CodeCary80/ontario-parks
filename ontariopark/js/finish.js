@@ -79,5 +79,5 @@ function submitReview() {
 
 // Function to go back to home/selection page
 function goToHome() {
-    window.location.href = './selection.html';
+    window.location.href = './index.html';
 }

@@ -405,5 +405,5 @@ function goBack() {
     }
     
     // Go back to detail page
-    window.location.href = `selection.html`;
+    window.location.href = `index.html`;
 }
