@@ -1,0 +1,130 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Nunito', sans-serif;
+}
+
+body {
+    background-color: #1F331B;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+}
+
+/* Content area */
+.content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Stats section */
+.stats-section {
+    margin-bottom: 30px;
+}
+
+.stat-label {
+    color: #aaa;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.stat-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+/* Review section */
+.review-section {
+    background-color: #000;
+    border-radius: 15px 15px 0 0;
+    padding: 30px 20px;
+    margin: 0 -20px;
+}
+
+.review-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.review-subtitle {
+    color: #ccc;
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.rating-stars {
+    display: flex;
+    justify-content: space-between;
+    max-width: 300px;
+    margin-bottom: 20px;
+}
+
+.star {
+    width: 50px;
+    height: 50px;
+    background-color: #333;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    cursor: pointer;
+    color: #777;
+}
+
+.star.active {
+    color: #FFD700;
+}
+
+.review-textarea {
+    width: 100%;
+    height: 100px;
+    background-color: #222;
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    color: white;
+    font-size: 16px;
+    margin-top: 20px;
+    resize: none;
+}
+
+.submit-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 700;
+    width: 100%;
+    margin-top: 20px;
+    cursor: pointer;
+}

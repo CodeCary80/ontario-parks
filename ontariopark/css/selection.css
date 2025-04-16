@@ -1,0 +1,308 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: #1F331B;
+    background-image: linear-gradient(rgba(31, 51, 27, 0.9), rgba(31, 51, 27, 0.9)),
+                      repeating-linear-gradient(to right, rgba(255,255,255,0.05), rgba(255,255,255,0.05) 2px, transparent 2px, transparent 30px);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* Header */
+.header {
+    padding: 20px 15px;
+    position: sticky;
+    top: 0;
+    background-color: transparent;
+    z-index: 10;
+    color: #fff;
+    background-color: #1F331B;
+}
+
+.header h1 {
+    font-size: clamp(20px, 5vw, 24px);
+    font-weight: 800;
+}
+
+/* Search Bar */
+.search-container {
+    padding: 0 15px 15px;
+    position: sticky;
+    top: 60px;
+    background-color: transparent;
+    z-index: 10;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 50px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.search-icon {
+    margin-right: 10px;
+    color: #152B0B;
+    font-size: clamp(16px, 4vw, 20px);
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    font-size: clamp(16px, 4vw, 18px);
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    color: #152B0B;
+    outline: none;
+}
+
+.filter-icon {
+    color: #152B0B;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Status Messages */
+.status-message {
+    color: white;
+    text-align: center;
+    padding: 40px 20px;
+    width: 100%;
+}
+
+.loading-message {
+    color: #ffffff;
+}
+
+.info-message {
+    color: #ffcc00;
+}
+
+.error-message {
+    color: #ff4444;
+}
+
+/* Horizontal Scrolling Container */
+.parks-scroll-container {
+    flex: 1;
+    overflow-x: auto;
+    padding: 15px;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 15px;
+    display: flex;
+    width: 100%;
+}
+
+/* Park Cards Container */
+.parks-container {
+    display: flex;
+    gap: 15px;
+    height: 100%;
+}
+
+/* Park Card */
+.park-card {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    padding: clamp(15px, 4vw, 25px);
+    color: white;
+    scroll-snap-align: start;
+    min-width: calc(100vw - 30px);
+    width: calc(100vw - 30px);
+    max-width: 400px;
+    height: auto;
+    min-height: 60vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    margin-bottom: 15px;
+    text-decoration: none;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.park-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.7));
+    border-radius: 20px;
+    z-index: 0;
+}
+
+.card-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.park-name {
+    font-size: clamp(24px, 5vw, 28px);
+    font-weight: 800;
+    margin-bottom: clamp(5px, 2vw, 10px);
+}
+
+.park-detail-wrapper {
+    margin-bottom: 20px;
+}
+
+.park-detail {
+    font-size: clamp(14px, 3.5vw, 16px);
+    margin-bottom: 8px;
+}
+
+.action-buttons {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 2;
+}
+
+.circle-button {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(31, 51, 27, 0.8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.tag {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    backdrop-filter: blur(2px);
+}
+
+.view-map-button {
+    background-color: #00E676;
+    color: #000;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 0;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 200px;
+    margin: 20px auto;
+    text-align: center;
+    display: block;
+}
+
+/* Filter Chips */
+.filter-chips {
+    display: flex;
+    padding: 15px;
+    gap: 10px;
+    overflow-x: auto;
+    position: sticky;
+}
+
+.filter-chip {
+    padding: 8px 15px;
+    background-color: white;
+    border-radius: 50px;
+    font-size: clamp(12px, 3vw, 14px);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-chip.selected {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.nav-icon {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+    .park-card {
+        min-width: calc(50vw - 30px);
+        width: calc(50vw - 30px);
+    }
+}
+
+@media (min-width: 1024px) {
+    .park-card {
+        min-width: calc(33vw - 30px);
+        width: calc(33vw - 30px);
+    }
+}
+
+/* Hide scrollbar but keep functionality */
+.parks-scroll-container::-webkit-scrollbar,
+.filter-chips::-webkit-scrollbar {
+    display: none;
+}
+
+.parks-scroll-container,
+.filter-chips {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* New styles for active nav item */
+.nav-item.active {
+    color: #4CAF50;
+}
+.nav-item.active .nav-icon {
+    color: #4CAF50;
+}

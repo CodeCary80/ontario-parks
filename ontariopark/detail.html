@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trail Explorer - Trail Details</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Inter:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/detai.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <button class="back-button" onclick="window.history.back();">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+        <div class="header-title">Trail Details</div>
+    </div>
+    
+    <!-- Hero Image Section -->
+    <div class="hero-image" id="hero-image">
+        <div class="trail-info-overlay">
+            <h1 class="trail-name" id="trail-name">Loading...</h1>
+            <div class="park-name" id="park-name">
+                <span id="park-location">Loading park...</span>
+                <span class="difficulty" id="difficulty">Easy</span>
+            </div>
+            <div class="rating" id="rating-stars">
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star" style="opacity: 0.3;">★</span>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-label">Distance</div>
+                    <div class="stat-value" id="distance">-- km</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Est. Time</div>
+                    <div class="stat-value" id="time">-- mins</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Elevation</div>
+                    <div class="stat-value" id="elevation">-- m</div>
+                </div>
+            </div>
+            
+            <div class="features-container" id="features-container">
+                <!-- Features will be added dynamically -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Map Preview -->
+        <div class="map-preview">
+            <div id="preview-map"></div>
+            <button class="preview-button" id="preview-button">Preview Video</button>
+        </div>
+        
+        <!-- Information Section -->
+        <div class="info-section" id="info-section">
+            <p>Loading park information...</p>
+        </div>
+        
+        <!-- Weather Section -->
+        <div class="weather-section">
+            <h2 class="weather-title">Weather</h2>
+            <div class="weather-forecast" id="weather-forecast">
+                <!-- Weather will be added dynamically -->
+            </div>
+        </div>
+        
+        <!-- Reviews Section -->
+        <div class="reviews-section" id="reviews">
+            <div class="reviews-header">
+                <h2 class="reviews-title">Reviews</h2>
+                <span class="review-count" id="review-count">4/5</span>
+            </div>
+            <div id="reviews-container">
+                <!-- Reviews will be added dynamically -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Video Overlay -->
+    <div class="video-overlay" id="video-overlay">
+        <div class="video-container">
+            <button class="close-video" id="close-video">×</button>
+            <video id="preview-video" controls>
+                <source src="preview.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <!-- Download Modal -->
+    <div class="download-modal" id="download-modal">
+        <div class="download-content">
+            <h2 class="download-title">Download Map</h2>
+            <div class="download-options">
+                <div class="download-option" id="download-image">
+                    <div class="download-option-icon">🗺️</div>
+                    <div class="download-option-text">
+                        <div class="download-option-title">Static Map Image</div>
+                        <div class="download-option-desc">High-quality image of the trail area</div>
+                    </div>
+                </div>
+                <div class="download-option" id="download-gpx">
+                    <div class="download-option-icon">📱</div>
+                    <div class="download-option-text">
+                        <div class="download-option-title">GPX Route File</div>
+                        <div class="download-option-desc">For use with GPS devices and apps</div>
+                    </div>
+                </div>
+            </div>
+            <button class="download-close" id="download-close">Close</button>
+        </div>
+    </div>
+    
+    <!-- Bottom Action Bar -->
+    <div class="bottom-bar">
+        <button class="map-download-button" id="download-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Map Download
+        </button>
+        <button class="begin-trail-button" id="begin-trail-button">Begin Trail</button>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="download-toast">Map downloaded successfully!</div>
+    
+    <!-- Load Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Load FileSaver.js for downloading files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
+    <!-- Load html2canvas for capturing map as image -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <script src="./js/detail.js"></script>
+</body>
+</html>

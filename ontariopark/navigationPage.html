@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trail Explorer - Navigation</title>
+    <!-- Add Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Inter:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/navigation.css">
+</head>
+<body>
+    <!-- Map Container -->
+    <div class="map-container">
+        <div id="map"></div>
+        
+        <!-- Back Button -->
+        <button class="back-button" onclick="goBack()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+        
+        <!-- North Button -->
+        <button class="north-button" onclick="resetNorth()">N</button>
+        
+        <!-- Navigation Status -->
+        <div class="nav-status">
+            <div class="status-pill" id="nav-status">Starting navigation...</div>
+        </div>
+    </div>
+    
+    <!-- Info Panel -->
+    <div class="info-panel">
+        <div class="handle"></div>
+        
+        <div class="trail-title">
+            <h1 id="trail-name">Whiskey Rapids Trail</h1>
+            <div class="difficulty-tag" id="difficulty">Easy</div>
+        </div>
+        
+        <div class="location-info">
+            <span class="location-icon">📍</span>
+            <span id="park-location">Algonquin Provincial Park, Toronto</span>
+        </div>
+        
+        <div class="stats-top-row">
+            <div class="stat-box">
+                <div class="stat-value" id="time">0:00</div>
+                <div class="stat-label">Time</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="distance">0.00<span style="font-size: 16px;">km</span></div>
+                <div class="stat-label">Distance</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="elevation">0<span style="font-size: 16px;">m</span></div>
+                <div class="stat-label">Elev.gain</div>
+            </div>
+        </div>
+        
+        <div class="stats-bottom-row">
+            <div class="stat-box">
+                <div class="stat-value" id="remaining">40<span style="font-size: 16px;">mins</span></div>
+                <div class="stat-label">Remaining</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="pace">0:00<span style="font-size: 16px;">/km</span></div>
+                <div class="stat-label">Pace</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="speed">0.0<span style="font-size: 16px;"> kph</span></div>
+                <div class="stat-label">Speed</div>
+            </div>
+        </div>
+        
+        
+        <!-- Action Buttons - Initial State -->
+        <div class="action-buttons" id="action-buttons">
+            <button class="action-button start-button" id="start-button" onclick="startNavigation()">Start</button>
+        </div>
+    </div>
+    
+    <!-- Load Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  
+    <script src="./js/navigation.js"></script>
+</body>
+</html>

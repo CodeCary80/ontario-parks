@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ontario Parks - Trail Selection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Inter:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/selection.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1 id="header-title">Parks Near You</h1>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Find Parks..." id="search-input">
+            <span class="filter-icon">⋮</span>
+        </div>
+    </div>
+    
+    <!-- Filter Chips -->
+    <div class="filter-chips">
+        <div class="filter-chip" data-filter="Easy">Easy</div>
+        <div class="filter-chip" data-filter="Kid Friendly">Kid Friendly</div>
+        <div class="filter-chip" data-filter="Camping">Camping</div>
+        <div class="filter-chip" data-filter="Dog Friendly">Dog Friendly</div>
+        <div class="filter-chip" data-filter="Waterfront">Waterfront</div>
+        <div class="filter-chip" data-filter="Scenic Views">Scenic Views</div>
+    </div>
+    
+    <!-- Horizontal Scrolling Container -->
+    <div class="parks-scroll-container">
+        <div class="parks-container" id="parks-container">
+            <div class="status-message loading-message">Finding parks near you...</div>
+        </div>
+    </div>
+    
+    <!-- View Map Button -->
+    <button class="view-map-button" onclick="navigateToMap()">View Map</button>
+    
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active" id="nav-search">
+            <div class="nav-icon">🔍</div>
+            <div>Search</div>
+        </a>
+
+        <a href="#" class="nav-item" id="nav-explore">
+            <div class="nav-icon">🧭</div>
+            <div>Explore</div>
+        </a>
+        <a href="#" class="nav-item" id="nav-saved">
+            <div class="nav-icon">🔖</div>
+            <div>Saved</div>
+        </a>
+        <a href="#" class="nav-item" id="nav-profile">
+            <div class="nav-icon">👤</div>
+            <div>Profile</div>
+        </a>
+    </div>
+
+    <script src="./js/selection.js"></script>
+</body>
+</html>

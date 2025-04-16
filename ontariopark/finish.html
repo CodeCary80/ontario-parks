@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trail Explorer - Review</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Inter:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/finish.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <button class="close-button" onclick="goToHome()">×</button>
+    </div>
+    
+    <!-- Content Area -->
+    <div class="content">
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stat-icon">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0xMyA0VjE2TDIwIDloLTVWNGgtMlptLTIgMTJWNEg5VjloLTVsNyA3WiIgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik0xOCAxNXY0SDZWMTVINHYxYzAgMS4xLjkgMiAyIDJoMTJjMS4xIDAgMi0uOSAyLTJ2LTFoLTJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=" alt="Activity" width="50" height="50">
+            </div>
+            <div class="stat-label">Activity</div>
+            <div class="stat-value">Hiking</div>
+            
+            <div class="stat-label">Distance</div>
+            <div class="stat-value">2.1 km</div>
+            
+            <div class="stat-label">Elevation gain</div>
+            <div class="stat-value">815 m</div>
+            
+            <div class="stat-label">Time</div>
+            <div class="stat-value">0:03:54</div>
+        </div>
+        
+        <!-- Review Section -->
+        <div class="review-section">
+            <h1 class="review-title">How was the trail?</h1>
+            <p class="review-subtitle">Share your experience with the community.</p>
+            
+            <div class="rating-stars">
+                <div class="star" data-rating="1">★</div>
+                <div class="star" data-rating="2">★</div>
+                <div class="star" data-rating="3">★</div>
+                <div class="star" data-rating="4">★</div>
+                <div class="star" data-rating="5">★</div>
+            </div>
+            
+            <textarea class="review-textarea" placeholder="Write your review here..."></textarea>
+            
+            <button class="submit-button" onclick="submitReview()">Submit Review</button>
+        </div>
+    </div>
+    <script src="./js/finish.js"></script>
+</body>
+</html>
