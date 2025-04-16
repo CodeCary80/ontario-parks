@@ -54,7 +54,7 @@ alive: https://peru-deer-873587.hostingersite.com/map.html
 
 The application consists of several interconnected pages:
 
-1. **Selection Page (`selection.html`)**: Browse and search for parks with filter options
+1. **Selection Page (`index.html`)**: Browse and search for parks with filter options
 2. **Map View (`map.html`)**: View parks on an interactive map
 3. **Trail Details (`detail.html`)**: View comprehensive information about a specific trail
 4. **Navigation (`navigationPage.html`)**: Real-time trail navigation and tracking
